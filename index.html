@@ -1,0 +1,335 @@
+import os
+
+# Define the HTML content with CSS and JS included
+html_content = """<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Lebenslauf - [Dein Name]</title>
+    <style>
+        /* CSS STYLES */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --bg-color: #ffffff;
+            --text-color: #1e293b;
+            --card-bg: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #60a5fa;
+            --secondary-color: #94a3b8;
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: var(--text-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 4px solid var(--primary-color);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-info span {
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 3.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 1rem;
+            color: var(--primary-color);
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none; /* Einfachheitshalber für Mobile ausgeblendet */
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><strong>Mein</strong>Portfolio</div>
+        <ul class="nav-links">
+            <li><a href="#ueber-mich">Über mich</a></li>
+            <li><a href="#erfahrung">Erfahrung</a></li>
+            <li><a href="#bildung">Bildung</a></li>
+            <li><a href="#skills">Skills</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle">Modus wechseln</button>
+    </nav>
+
+    <div class="container">
+        <header>
+            <img src="https://via.placeholder.com/180" alt="Profilbild" class="profile-img">
+            <h1>[Vorname Nachname]</h1>
+            <p>[Dein angestrebter Jobtitel / Profession]</p>
+            <div class="contact-info">
+                <span>📍 [Stadt, Land]</span>
+                <span>📧 [deine.email@beispiel.de]</span>
+                <span>📞 [+49 123 456789]</span>
+                <span>🔗 [linkedin.com/in/deinname]</span>
+            </div>
+        </header>
+
+        <section id="ueber-mich">
+            <h2>Über mich</h2>
+            <div class="card">
+                <p>[Schreibe hier eine kurze Zusammenfassung über dich selbst, deine Motivation und was dich auszeichnet. Zum Beispiel: "Leidenschaftlicher Webentwickler mit Fokus auf moderne UI/UX-Designs und effiziente Backend-Lösungen..."]</p>
+            </div>
+        </section>
+
+        <section id="erfahrung">
+            <h2>Berufserfahrung</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>[Jobtitel / Position]</h3>
+                    <span class="date">[Monat/Jahr] – [Heute/Datum]</span>
+                </div>
+                <p><strong>[Firmenname]</strong>, [Ort]</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>[Verantwortung oder Erfolg #1]</li>
+                    <li>[Verantwortung oder Erfolg #2]</li>
+                    <li>[Verantwortung oder Erfolg #3]</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>[Vorheriger Jobtitel]</h3>
+                    <span class="date">[Datum] – [Datum]</span>
+                </div>
+                <p><strong>[Firmenname]</strong>, [Ort]</p>
+                <p style="margin-top: 10px;">[Kurze Beschreibung der Tätigkeit und der verwendeten Technologien oder Methoden.]</p>
+            </div>
+        </section>
+
+        <section id="bildung">
+            <h2>Bildungsweg</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3>[Name des Studiengangs / Abschluss]</h3>
+                    <span class="date">[Start] – [Ende]</span>
+                </div>
+                <p><strong>[Name der Universität / Schule]</strong>, [Ort]</p>
+                <p>[Schwerpunkte: Fach A, Fach B, Abschlussnote: X.X]</p>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Fähigkeiten</h2>
+            <div class="skills-grid">
+                <div class="skill-item">HTML / CSS</div>
+                <div class="skill-item">JavaScript</div>
+                <div class="skill-item">React / Vue</div>
+                <div class="skill-item">Python</div>
+                <div class="skill-item">Projektmanagement</div>
+                <div class="skill-item">Deutsch (C2)</div>
+                <div class="skill-item">Englisch (B2)</div>
+                <div class="skill-item">Problem Solving</div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 [Dein Name]. Erstellt mit Herz und Code.</p>
+    </footer>
+
+    <script>
+        // JAVASCRIPT
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Dark Mode Umschalter
+        themeToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Gespeichertes Theme laden
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+        }
+
+        // Einfacher Scroll-Effekt für die Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = document.querySelector(this.getAttribute('href'));
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>"""
+
+file_path = "persoenlicher_lebenslauf.html"
+
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(file_path)
